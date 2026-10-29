@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>StivaCare Flyer Maker</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#faf7f0;--card:#fff;--ink:#0e6868;--sub:#5d7a76;--accent:#eb6a52;--line:#e6dfd2;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10201f;--card:#183230;--ink:#7fd3cd;--sub:#9db8b4;--line:#2b4845;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#10201f;--card:#183230;--ink:#7fd3cd;--sub:#9db8b4;--line:#2b4845;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Plus Jakarta Sans",system-ui,sans-serif}
+main{max-width:560px;margin:0 auto;padding:16px}
+h1{font-size:20px;margin:4px 0 2px}
+p.s{margin:0 0 14px;color:var(--sub);font-size:14px}
+.box{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px}
+label{display:block;font-size:13px;font-weight:700;margin:10px 0 4px}
+label:first-child{margin-top:0}
+input[type=text]{width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:600 16px inherit}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.btn{display:block;width:100%;padding:14px;border-radius:12px;border:0;background:var(--accent);color:#fff;font:800 16px inherit;text-align:center;cursor:pointer}
+.btn.alt{background:transparent;color:var(--ink);border:2px dashed var(--accent)}
+.btn[disabled]{opacity:.45}
+.pk{position:relative;overflow:hidden}.pk input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:200px}
+#cv{width:100%;height:auto;aspect-ratio:1;display:block;border-radius:12px;background:#faf7f0}
+.hint{font-size:12px;color:var(--sub);margin:8px 0 0}
+.chk{display:flex;gap:8px;align-items:center;font-size:13px;font-weight:600;margin-top:12px}
+#res{display:none;margin-top:12px;text-align:center}
+#res img{width:100%;border-radius:12px}
+</style>
+</head>
+<body>
+<main>
+<h1>StivaCare Flyer Maker</h1>
+<p class="s">Add your name and photo. Your picture fades softly into the flyer, so any background works.</p>
+<div class="box"><canvas id="cv" width="1080" height="1080"></canvas>
+<p class="hint" id="hint">Add a photo to begin. Then drag the picture to position your face.</p></div>
+<div class="box">
+<label for="nm">Your name</label>
+<input type="text" id="nm" maxlength="26" placeholder="e.g. Abby" autocomplete="off">
+<div class="btn alt pk" id="pick" style="margin-top:12px"><span id="pt">Add your photo</span><input type="file" id="fi" accept="image/*"></div>
+<label for="zm">Zoom</label><input type="range" id="zm" min="1" max="2.6" step="0.01" value="1">
+<label for="bl">Edge softness</label><input type="range" id="bl" min="20" max="110" step="1" value="55">
+<label class="chk"><input type="checkbox" id="wm" checked> Warm tone to match the flyer</label>
+</div>
+<button class="btn" id="dl" type="button" disabled>Download flyer (2160 × 2160)</button>
+<div id="res"><p class="hint">Tap Save image, or press and hold the picture and choose Save.</p><a id="sv" class="btn" download="StivaCare-Flyer.png" style="display:none;margin-bottom:10px;text-decoration:none">Save image</a><img id="out" alt="Your StivaCare flyer"></div>
+</main>
+<script>
+(function(){
+var W=1254,F='"Plus Jakarta Sans",system-ui,sans-serif',TEAL='#0e6868',CORAL='#eb6a52';
+var QR="1111111000010001001010111000101111111|1000001000101101010101101001001000001|1011101011000101101111111010101011101|1011101010010101011110001111001011101|1011101010010100000100010110101011101|1000001010100000101011100011001000001|1111111010101010101010101010101111111|0000000011111011000101110011000000000|1011111001011000001000010110001111100|0111110100101111100000110000010101010|0001111001010110011000101011101100011|0100100001000010100101100001010110001|0100001011111010100001111111011011011|1000000000101111111111010110100100010|0101001101100011110001100011101111001|0111100101111101011111011000111110010|0010101100100010100010001111011110101|0101000000011001011100010010110000110|1100101001101111110010000101100110011|1101000011001111000011001011101000001|1011111001100001111101111110111011000|1110010101110010100111010000100001010|1011101111001011001010101011011111011|0001000100010000000011010010101110001|0100001011100110001110111100101110100|1011010001110101100101010010000100100|1010011101110000000011001001001110111|1001000011010110100011110011011110010|1110101110111100000100101111111111100|0000000010010010111010111111100011000|1111111000001101110001001010101010111|1000001011100001111011101011100011001|1011101010101111100000101101111110100|1011101011100101001111011011011011101|1011101010101111100010101000010001111|1000001000100011001001100000111011001|1111111011010011100000100110000010111".split('|'),N=QR.length;
+var S={img:null,zoom:1,ox:0,oy:0},cv=document.getElementById('cv'),cx=cv.getContext('2d');
+var $=function(i){return document.getElementById(i)};
+var BOX={x:560,y:80,w:800,h:870};
+
+function shape(c){c.beginPath();c.moveTo(740,200);c.bezierCurveTo(740,130,790,90,870,90);c.lineTo(1500,90);c.lineTo(1500,925);c.bezierCurveTo(1150,945,900,935,760,850);c.bezierCurveTo(680,800,620,770,600,760);c.bezierCurveTo(610,600,740,420,740,200);c.closePath();}
+
+function fit(c,t,w,wt){c.font=wt+' 100px '+F;return w/c.measureText(t).width*100;}
+function txt(c,t,x,y,w,wt,col){var s=fit(c,t,w,wt);c.font=wt+' '+s+'px '+F;c.fillStyle=col;c.textBaseline='alphabetic';c.textAlign='left';c.fillText(t,x,y);return s;}
+function rr(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath();}
+function rnd(i){var v=Math.sin(i*12.9898)*43758.5453;return v-Math.floor(v);}
+
+function photoLayer(size,preview){
+  var k=size/W,L=document.createElement('canvas');L.width=L.height=size;var c=L.getContext('2d');c.scale(k,k);
+  if(S.img){
+    var im=S.img,base=Math.max(BOX.w/im.width,BOX.h/im.height),sc=base*S.zoom,dw=im.width*sc,dh=im.height*sc;
+    var mx=(dw-BOX.w)/2,my=(dh-BOX.h)/2;S.ox=Math.max(-mx,Math.min(mx,S.ox));S.oy=Math.max(-my,Math.min(my,S.oy));
+    var cxp=BOX.x+BOX.w/2+S.ox,cyp=BOX.y+BOX.h/2+S.oy;
+    c.drawImage(im,cxp-dw/2,cyp-dh/2,dw,dh);
+    if($('wm').checked){c.globalCompositeOperation='source-atop';c.fillStyle='rgba(255,208,160,0.13)';c.fillRect(0,0,W,W);c.globalCompositeOperation='source-over';}
+  }else if(preview){
+    var g=c.createLinearGradient(600,100,1254,930);g.addColorStop(0,'#f8dcd2');g.addColorStop(1,'#f0b8a6');c.fillStyle=g;c.fillRect(540,80,800,880);
+    c.fillStyle='rgba(255,255,255,.55)';c.beginPath();c.arc(960,420,120,0,7);c.fill();c.beginPath();c.ellipse(960,800,260,230,0,0,7);c.fill();
+    c.fillStyle=TEAL;c.font='700 34px '+F;c.textAlign='center';c.fillText('Your photo here',960,600);
+  }
+  var M=document.createElement('canvas');M.width=M.height=size;var m=M.getContext('2d');m.scale(k,k);
+  var OFF=3*W;m.shadowColor='#000';m.shadowBlur=(+$('bl').value)*k;m.shadowOffsetX=OFF*k;m.shadowOffsetY=0;
+  m.translate(-OFF,0);shape(m);m.fillStyle='#000';m.fill();
+  c.setTransform(1,0,0,1,0,0);c.globalCompositeOperation='destination-in';c.drawImage(M,0,0);
+  return L;
+}
+
+function draw(c,size,preview){
+  var k=size/W;c.setTransform(1,0,0,1,0,0);c.clearRect(0,0,size,size);c.scale(k,k);
+  c.fillStyle='#faf7f0';c.fillRect(0,0,W,W);
+  c.fillStyle='#ee8872';c.beginPath();c.moveTo(1060,0);c.bezierCurveTo(985,60,975,230,1090,300);c.bezierCurveTo(1150,335,1254,300,1254,280);c.lineTo(1254,0);c.closePath();c.fill();
+  c.fillStyle='#0f6665';c.beginPath();c.moveTo(0,1040);c.bezierCurveTo(70,1070,150,1170,165,1254);c.lineTo(0,1254);c.closePath();c.fill();
+  c.setTransform(1,0,0,1,0,0);c.drawImage(photoLayer(size,preview),0,0);c.scale(k,k);
+  txt(c,'Are you a',90,240,568,800,TEAL);
+  txt(c,'Mum?',90,415,575,800,CORAL);
+  txt(c,'I am inviting you to become a',97,500,493,600,TEAL);
+  var s=fit(c,'StivaCare Mum too!',370,700);c.font='700 '+s+'px '+F;c.textBaseline='alphabetic';
+  var x=97;[['Stiva',TEAL],['Care',CORAL],[' Mum too!',TEAL]].forEach(function(p){c.fillStyle=p[1];c.fillText(p[0],x,556);x+=c.measureText(p[0]).width;});
+  var bs=fit(c,'how to keep our children and homes,',481,400);
+  ['Join us as we navigate the world','of motherhood together and learn','how to keep our children and homes,','safe and healthy.'].forEach(function(l,i){c.font='400 '+bs+'px '+F;c.fillStyle=TEAL;c.fillText(l,97,[625,668,712,755][i]);});
+  c.fillStyle=CORAL;c.fillRect(93,887,6,166);
+  txt(c,'Join me in the Circle',130,955,562,700,TEAL);
+  txt(c,'It\u2019s FREE!',132,1033,298,800,CORAL);
+  nameTag(c);qrCard(c,size,k);logo(c);
+}
+
+function nameTag(c){
+  var nm=($('nm').value.trim()||'Your name').toUpperCase();
+  var s=Math.min(30,fit(c,nm,300,800));c.font='800 '+s+'px '+F;var tw=c.measureText(nm).width;
+  var w=Math.max(300,tw+90),h=92,cx0=972,cy0=812,x0=cx0-w/2,y0=cy0-h/2,n=24,i,pts=[];
+  c.save();c.shadowColor='rgba(15,80,80,.18)';c.shadowBlur=14;c.shadowOffsetY=5;c.fillStyle='#fce6dd';c.beginPath();
+  c.moveTo(x0-10,y0+14+rnd(1)*8);
+  for(i=0;i<=n;i++)c.lineTo(x0+i*w/n,y0+(i%2?-3:4)*rnd(i+3)+2);
+  c.lineTo(x0+w+12,y0+22);c.lineTo(x0+w+2,cy0);c.lineTo(x0+w+14,y0+h-18);
+  for(i=n;i>=0;i--)c.lineTo(x0+i*w/n,y0+h+(i%2?3:-4)*rnd(i+40)-2);
+  c.lineTo(x0-12,y0+h-20);c.lineTo(x0-2,cy0+4);c.closePath();c.fill();c.restore();
+  c.fillStyle=TEAL;c.textAlign='center';c.font='800 '+s+'px '+F;c.fillText(nm,cx0,cy0+8);
+  c.strokeStyle=CORAL;c.lineWidth=3;c.lineCap='round';c.beginPath();c.moveTo(cx0-60,cy0+24);c.lineTo(cx0+60,cy0+22);c.stroke();c.textAlign='left';
+}
+
+function qrCard(c,size,k){
+  c.save();c.shadowColor='rgba(15,80,80,.2)';c.shadowBlur=26;c.shadowOffsetY=8;c.fillStyle='#fff';rr(c,930,945,250,285,22);c.fill();c.restore();
+  var ms=Math.max(1,Math.round(196*k/N)),qp=N*ms,x0=Math.round(1055*k-qp/2),y0=Math.round(967*k);
+  c.save();c.setTransform(1,0,0,1,0,0);c.fillStyle='#0b1f1f';
+  for(var i=0;i<N;i++)for(var j=0;j<N;j++)if(QR[i].charAt(j)==='1')c.fillRect(x0+j*ms,y0+i*ms,ms,ms);
+  c.restore();
+  c.textAlign='center';c.fillStyle=TEAL;c.font='800 22px '+F;c.fillText('Scan to join the Circle',1055,1196);
+  c.fillStyle=CORAL;c.font='700 14px '+F;c.fillText('StivaCare Mothers Circle \u00b7 WhatsApp',1055,1218);c.textAlign='left';
+}
+
+function logo(c){
+  var x=200,y=1105,w=96,h=82;c.save();c.translate(x,y);c.fillStyle=TEAL;c.beginPath();
+  c.moveTo(.5*w,h);c.bezierCurveTo(-.15*w,.55*h,.05*w,-.05*h,.5*w,.28*h);c.bezierCurveTo(.95*w,-.05*h,1.15*w,.55*h,.5*w,h);c.closePath();c.fill();
+  c.fillStyle='#fff';rr(c,.5*w-6,.38*h,12,.4*h,3);c.fill();rr(c,.5*w-.2*h,.52*h-6,.4*h,12,3);c.fill();c.restore();
+  var s=52;c.font='700 '+s+'px '+F;c.textBaseline='alphabetic';c.fillStyle=TEAL;c.fillText('Stiva',312,1168);
+  var sw=c.measureText('Stiva').width;c.fillStyle=CORAL;c.fillText('Care',312+sw,1168);
+  c.fillStyle='#6f8f86';c.font='400 15px '+F;c.fillText('Prepared for the moments that matter.',314,1194);
+}
+
+var raf=0;function render(){if(raf)return;raf=requestAnimationFrame(function(){raf=0;draw(cx,1080,true);});}
+var fontsReady=Promise.all(['400','600','700','800'].map(function(w){return document.fonts.load(w+' 40px "Plus Jakarta Sans"');})).catch(function(){});
+fontsReady.then(render);render();
+
+$('fi').onchange=function(e){
+  var f=e.target.files&&e.target.files[0];if(!f)return;var u=URL.createObjectURL(f),im=new Image();
+  im.onload=function(){S.img=im;S.zoom=1;S.ox=0;S.oy=0;$('zm').value=1;$('dl').disabled=false;cv.style.touchAction='none';$('pt').textContent='Change photo';$('hint').textContent='Drag the picture to position your face. Use Zoom and Edge softness to blend.';render();};
+  im.onerror=function(){$('hint').textContent='This photo could not be opened. Please try a JPG or PNG photo.';};im.src=u;
+};
+['zm','bl','wm','nm'].forEach(function(id){$(id).addEventListener('input',function(){if(id==='zm')S.zoom=+$('zm').value;render();});});
+var drag=null;
+cv.addEventListener('pointerdown',function(e){if(!S.img)return;drag={x:e.clientX,y:e.clientY};cv.setPointerCapture(e.pointerId);});
+cv.addEventListener('pointermove',function(e){if(!drag)return;var r=cv.getBoundingClientRect(),f=W/r.width;S.ox+=(e.clientX-drag.x)*f;S.oy+=(e.clientY-drag.y)*f;drag={x:e.clientX,y:e.clientY};render();});
+['pointerup','pointercancel'].forEach(function(t){cv.addEventListener(t,function(){drag=null;});});
+
+$('dl').onclick=async function(){
+  var b=$('dl');b.disabled=true;b.textContent='Preparing\u2026';
+  try{
+    await fontsReady;var E=document.createElement('canvas');E.width=E.height=2160;draw(E.getContext('2d'),2160,false);
+    var blob=await new Promise(function(r){E.toBlob(r,'image/png');});
+    var nm=($('nm').value.trim()||'Mum').replace(/[^\w\- ]/g,'').replace(/\s+/g,'-');
+    var d=null;try{d=window.claude&&await claude.use('downloads');}catch(x){}
+    if(d){try{await d.save({filename:'StivaCare-Mum-'+nm+'.png',data:blob});}catch(x){if(x&&x.code!=='declined'){showImg(blob);}}}
+    else showImg(blob);
+  }catch(x){console.error(x);}
+  b.disabled=false;b.textContent='Download flyer (2160 \u00d7 2160)';
+};
+function showImg(blob){var u=URL.createObjectURL(blob);$('out').src=u;var a=$('sv');a.href=u;a.style.display='block';$('res').style.display='block';$('res').scrollIntoView({behavior:'smooth'});}
+})();
+</script>
+</body>
+</html>
