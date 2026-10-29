@@ -56,5 +56,139 @@ input[type=text]{width:100%;padding:12px;border-radius:10px;border:1px solid var
 (function(){
 var W=1254,F='"Plus Jakarta Sans",system-ui,sans-serif',TEAL='#0e6868',CORAL='#eb6a52',BLUR=55;
 var QR="1111111000010001001010111000101111111|1000001000101101010101101001001000001|1011101011000101101111111010101011101|1011101010010101011110001111001011101|1011101010010100000100010110101011101|1000001010100000101011100011001000001|1111111010101010101010101010101111111|0000000011111011000101110011000000000|1011111001011000001000010110001111100|0111110100101111100000110000010101010|0001111001010110011000101011101100011|0100100001000010100101100001010110001|0100001011111010100001111111011011011|1000000000101111111111010110100100010|0101001101100011110001100011101111001|0111100101111101011111011000111110010|0010101100100010100010001111011110101|0101000000011001011100010010110000110|1100101001101111110010000101100110011|1101000011001111000011001011101000001|1011111001100001111101111110111011000|1110010101110010100111010000100001010|1011101111001011001010101011011111011|0001000100010000000011010010101110001|0100001011100110001110111100101110100|1011010001110101100101010010000100100|1010011101110000000011001001001110111|1001000011010110100011110011011110010|1110101110111100000100101111111111100|0000000010010010111010111111100011000|1111111000001101110001001010101010111|1000001011100001111011101011100011001|1011101010101111100000101101111110100|1011101011100101001111011011011011101|1011101010101111100010101000010001111|1000001000100011001001100000111011001|1111111011010011100000100110000010111".split('|'),N=QR.length;
-var LOGO=new Image();var LOK=0;LOGO.onload=function(){LOK=1;render();};LOGO.onerror=function(){render();};LOGO.src='data:image/png;base64,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
-  
+var LOGOS=['logo.png','1001277097.png','logo.jpg'],li=0,LOK=0,LOGO=new Image();
+LOGO.onload=function(){LOK=1;render();};
+LOGO.onerror=function(){li++;if(li<LOGOS.length){LOGO.src=LOGOS[li];}else{render();}};
+LOGO.src=LOGOS[0];
+var S={img:null,zoom:1,ox:0,oy:0},cv=document.getElementById('cv'),cx=cv.getContext('2d');
+var $=function(i){return document.getElementById(i)};
+var BOX={x:560,y:80,w:800,h:870};
+
+function shape(c){c.beginPath();c.moveTo(740,200);c.bezierCurveTo(740,130,790,90,870,90);c.lineTo(1500,90);c.lineTo(1500,925);c.bezierCurveTo(1150,945,900,935,760,850);c.bezierCurveTo(680,800,620,770,600,760);c.bezierCurveTo(610,600,740,420,740,200);c.closePath();}
+
+function fit(c,t,w,wt){c.font=wt+' 100px '+F;return w/c.measureText(t).width*100;}
+function txt(c,t,x,y,w,wt,col){var s=fit(c,t,w,wt);c.font=wt+' '+s+'px '+F;c.fillStyle=col;c.textBaseline='alphabetic';c.textAlign='left';c.fillText(t,x,y);return s;}
+function rr(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath();}
+function rnd(i){var v=Math.sin(i*12.9898)*43758.5453;return v-Math.floor(v);}
+
+function photoLayer(size,preview){
+  var k=size/W,L=document.createElement('canvas');L.width=L.height=size;var c=L.getContext('2d');c.scale(k,k);
+  if(S.img){
+    var im=S.img,base=Math.max(BOX.w/im.width,BOX.h/im.height),sc=base*S.zoom,dw=im.width*sc,dh=im.height*sc;
+    var mx=(dw-BOX.w)/2,my=(dh-BOX.h)/2;S.ox=Math.max(-mx,Math.min(mx,S.ox));S.oy=Math.max(-my,Math.min(my,S.oy));
+    var cxp=BOX.x+BOX.w/2+S.ox,cyp=BOX.y+BOX.h/2+S.oy;
+    c.drawImage(im,cxp-dw/2,cyp-dh/2,dw,dh);
+    c.globalCompositeOperation='source-atop';c.fillStyle='rgba(255,208,160,0.13)';c.fillRect(0,0,W,W);c.globalCompositeOperation='source-over';
+  }else if(preview){
+    var g=c.createLinearGradient(600,100,1254,930);g.addColorStop(0,'#f8dcd2');g.addColorStop(1,'#f0b8a6');c.fillStyle=g;c.fillRect(540,80,800,880);
+    c.fillStyle='rgba(255,255,255,.55)';c.beginPath();c.arc(960,420,120,0,7);c.fill();c.beginPath();c.ellipse(960,800,260,230,0,0,7);c.fill();
+    c.fillStyle=TEAL;c.font='700 34px '+F;c.textAlign='center';c.fillText('Your photo here',960,600);
+  }
+  var M=document.createElement('canvas');M.width=M.height=size;var m=M.getContext('2d');m.scale(k,k);
+  var OFF=3*W;m.shadowColor='#000';m.shadowBlur=BLUR*k;m.shadowOffsetX=OFF*k;m.shadowOffsetY=0;
+  m.translate(-OFF,0);shape(m);m.fillStyle='#000';m.fill();
+  c.setTransform(1,0,0,1,0,0);c.globalCompositeOperation='destination-in';c.drawImage(M,0,0);
+  return L;
+}
+
+function draw(c,size,preview){
+  var k=size/W;c.setTransform(1,0,0,1,0,0);c.clearRect(0,0,size,size);c.scale(k,k);
+  c.fillStyle='#faf7f0';c.fillRect(0,0,W,W);
+  c.fillStyle='#ee8872';c.beginPath();c.moveTo(1060,0);c.bezierCurveTo(985,60,975,230,1090,300);c.bezierCurveTo(1150,335,1254,300,1254,280);c.lineTo(1254,0);c.closePath();c.fill();
+  c.fillStyle='#0f6665';c.beginPath();c.moveTo(0,1040);c.bezierCurveTo(70,1070,150,1170,165,1254);c.lineTo(0,1254);c.closePath();c.fill();
+  c.setTransform(1,0,0,1,0,0);c.drawImage(photoLayer(size,preview),0,0);c.scale(k,k);
+  txt(c,'Are you a',90,240,568,800,TEAL);
+  txt(c,'Mum?',90,415,575,800,CORAL);
+  txt(c,'I am inviting you to become a',97,500,493,600,TEAL);
+  var s=fit(c,'StivaCare Mum too!',370,700);c.font='700 '+s+'px '+F;c.textBaseline='alphabetic';
+  var x=97;[['Stiva',TEAL],['Care',CORAL],[' Mum too!',TEAL]].forEach(function(p){c.fillStyle=p[1];c.fillText(p[0],x,556);x+=c.measureText(p[0]).width;});
+  var bs=fit(c,'how to keep our children and homes,',481,400);
+  ['Join us as we navigate the world','of motherhood together and learn','how to keep our children and homes,','safe and healthy.'].forEach(function(l,i){c.font='400 '+bs+'px '+F;c.fillStyle=TEAL;c.fillText(l,97,[625,668,712,755][i]);});
+  c.fillStyle=CORAL;c.fillRect(93,887,6,166);
+  txt(c,'Join me in the Circle',130,955,562,700,TEAL);
+  txt(c,'It\u2019s FREE!',132,1033,298,800,CORAL);
+  nameTag(c);qrCard(c,size,k);logo(c);
+}
+
+function nameTag(c){
+  var nm=($('nm').value.trim()||'Your name').toUpperCase();
+  var s=Math.min(30,fit(c,nm,300,800));c.font='800 '+s+'px '+F;var tw=c.measureText(nm).width;
+  var w=Math.max(300,tw+90),h=92,cx0=972,cy0=812,x0=cx0-w/2,y0=cy0-h/2,n=24,i;
+  c.save();c.shadowColor='rgba(15,80,80,.18)';c.shadowBlur=14;c.shadowOffsetY=5;c.fillStyle='#fce6dd';c.beginPath();
+  c.moveTo(x0-10,y0+14+rnd(1)*8);
+  for(i=0;i<=n;i++)c.lineTo(x0+i*w/n,y0+(i%2?-3:4)*rnd(i+3)+2);
+  c.lineTo(x0+w+12,y0+22);c.lineTo(x0+w+2,cy0);c.lineTo(x0+w+14,y0+h-18);
+  for(i=n;i>=0;i--)c.lineTo(x0+i*w/n,y0+h+(i%2?3:-4)*rnd(i+40)-2);
+  c.lineTo(x0-12,y0+h-20);c.lineTo(x0-2,cy0+4);c.closePath();c.fill();c.restore();
+  c.fillStyle=TEAL;c.textAlign='center';c.font='800 '+s+'px '+F;c.fillText(nm,cx0,cy0+8);
+  c.strokeStyle=CORAL;c.lineWidth=3;c.lineCap='round';c.beginPath();c.moveTo(cx0-60,cy0+24);c.lineTo(cx0+60,cy0+22);c.stroke();c.textAlign='left';
+}
+
+function qrCard(c,size,k){
+  c.save();c.shadowColor='rgba(15,80,80,.2)';c.shadowBlur=26;c.shadowOffsetY=8;c.fillStyle='#fff';rr(c,930,945,250,285,22);c.fill();c.restore();
+  var ms=Math.max(1,Math.round(196*k/N)),qp=N*ms,x0=Math.round(1055*k-qp/2),y0=Math.round(967*k);
+  c.save();c.setTransform(1,0,0,1,0,0);c.fillStyle='#0b1f1f';
+  for(var i=0;i<N;i++)for(var j=0;j<N;j++)if(QR[i].charAt(j)==='1')c.fillRect(x0+j*ms,y0+i*ms,ms,ms);
+  c.restore();
+  c.textAlign='center';c.fillStyle=TEAL;c.font='800 22px '+F;c.fillText('Scan to join the Circle',1055,1196);
+  c.fillStyle=CORAL;c.font='700 14px '+F;c.fillText('StivaCare Mothers Circle \u00b7 WhatsApp',1055,1218);c.textAlign='left';
+}
+
+function logo(c){
+  if(!LOK){if(li>=LOGOS.length)logoDrawn(c);return;}
+  var nw=LOGO.naturalWidth,nh=LOGO.naturalHeight;
+  c.save();c.globalCompositeOperation='multiply';c.drawImage(LOGO,nw*151/1080,nh*445/1080,nw*776/1080,nh*200/1080,200,1098,390,100.5);c.restore();
+}
+
+function logoDrawn(c){
+  var x=200,y=1105,w=96,h=82;c.save();c.translate(x,y);c.fillStyle=TEAL;c.beginPath();
+  c.moveTo(.5*w,h);c.bezierCurveTo(-.15*w,.55*h,.05*w,-.05*h,.5*w,.28*h);c.bezierCurveTo(.95*w,-.05*h,1.15*w,.55*h,.5*w,h);c.closePath();c.fill();
+  c.fillStyle='#fff';rr(c,.5*w-6,.38*h,12,.4*h,3);c.fill();rr(c,.5*w-.2*h,.52*h-6,.4*h,12,3);c.fill();c.restore();
+  c.font='700 52px '+F;c.fillStyle=TEAL;c.fillText('Stiva',312,1168);var sw=c.measureText('Stiva').width;c.fillStyle=CORAL;c.fillText('Care',312+sw,1168);
+  c.fillStyle='#6f8f86';c.font='400 15px '+F;c.fillText('Prepared for the moments that matter.',314,1194);
+}
+
+var raf=0;function render(){if(raf)return;raf=requestAnimationFrame(function(){raf=0;draw(cx,1080,true);});}
+var fontsReady=Promise.all(['400','600','700','800'].map(function(w){return document.fonts.load(w+' 40px "Plus Jakarta Sans"');})).catch(function(){});
+fontsReady.then(render);render();
+
+$('fi').onchange=function(e){
+  var f=e.target.files&&e.target.files[0];if(!f)return;var u=URL.createObjectURL(f),im=new Image();
+  im.onload=function(){
+    S.img=im;S.zoom=1;S.ox=0;
+    var base=Math.max(BOX.w/im.width,BOX.h/im.height),dh=im.height*base;S.oy=Math.max(0,(dh-BOX.h)/2)*0.6;
+    $('dl').classList.remove('off');cv.style.touchAction='none';$('pt').textContent='Change photo';
+    $('hint').textContent='Looks good? Tap Download below. To move your photo, drag it with your finger.';render();
+  };
+  im.onerror=function(){$('hint').textContent='This photo could not be opened. Please try a JPG or PNG photo.';};im.src=u;
+};
+$('nm').addEventListener('input',render);
+var drag=null;
+cv.addEventListener('pointerdown',function(e){if(!S.img)return;drag={x:e.clientX,y:e.clientY};cv.setPointerCapture(e.pointerId);});
+cv.addEventListener('pointermove',function(e){if(!drag)return;var r=cv.getBoundingClientRect(),f=W/r.width;S.ox+=(e.clientX-drag.x)*f;S.oy+=(e.clientY-drag.y)*f;drag={x:e.clientX,y:e.clientY};render();});
+['pointerup','pointercancel'].forEach(function(t){cv.addEventListener(t,function(){drag=null;});});
+
+$('dl').onclick=async function(){
+  if(!S.img){$('hint').textContent='Please add your photo first. Tap "Add your photo" above the Download button.';window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});return;}
+  var b=$('dl');b.textContent='Preparing\u2026';
+  try{
+    await fontsReady;var E=document.createElement('canvas');E.width=E.height=2160;draw(E.getContext('2d'),2160,false);
+    var blob=await new Promise(function(r){E.toBlob(r,'image/png');});
+    var nm=($('nm').value.trim()||'Mum').replace(/[^\w\- ]/g,'').replace(/\s+/g,'-');
+    var d=null;try{d=window.claude&&await claude.use('downloads');}catch(x){}
+    if(d){try{await d.save({filename:'StivaCare-Mum-'+nm+'.png',data:blob});}catch(x){if(x&&x.code!=='declined'){showImg(blob,nm);}}}
+    else showImg(blob,nm);
+  }catch(x){console.error(x);}
+  b.textContent='3. Download my flyer';
+};
+function showImg(blob,nm){
+  var u=URL.createObjectURL(blob),fn='StivaCare-Mum-'+nm+'.png';$('out').src=u;var a=$('sv');a.href=u;a.download=fn;
+  var sh=$('sh');sh.style.display='none';
+  try{var file=new File([blob],fn,{type:'image/png'});if(navigator.canShare&&navigator.canShare({files:[file]})){sh.style.display='block';sh.onclick=function(){navigator.share({files:[file]}).catch(function(){});};}}catch(x){}
+  $('ov').style.display='block';$('ov').scrollTop=0;
+}
+$('cl').onclick=function(){$('ov').style.display='none';};
+})();
+</script>
+</body>
+</html>
